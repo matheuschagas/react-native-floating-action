@@ -109,17 +109,17 @@ class FloatingAction extends Component {
   }
 
   get distanceToHorizontalEdge() {
-    const {distanceToEdge} = this.props;
+    const { distanceToEdge } = this.props;
     return typeof distanceToEdge === 'number'
-        ? distanceToEdge
-        : distanceToEdge.horizontal;
+      ? distanceToEdge
+      : distanceToEdge.horizontal;
   }
 
   get distanceToVerticalEdge() {
-    const {distanceToEdge} = this.props;
+    const { distanceToEdge } = this.props;
     return typeof distanceToEdge === 'number'
-        ? distanceToEdge
-        : distanceToEdge.vertical;
+      ? distanceToEdge
+      : distanceToEdge.vertical;
   }
 
   onKeyboardShow = e => {
