@@ -80,20 +80,6 @@ class FloatingAction extends Component {
     }
   }
 
-  get distanceToHorizontalEdge() {
-    const {distanceToEdge} = this.props;
-    return typeof distanceToEdge === 'number'
-        ? distanceToEdge
-        : distanceToEdge.horizontal;
-  }
-
-  get distanceToVerticalEdge() {
-    const {distanceToEdge} = this.props;
-    return typeof distanceToEdge === 'number'
-        ? distanceToEdge
-        : distanceToEdge.vertical;
-  }
-
   componentDidUpdate(prevProps) {
     const { visible } = this.props;
 
@@ -120,6 +106,20 @@ class FloatingAction extends Component {
       this.keyboardWillShowListener.remove();
       this.keyboardWillHideListener.remove();
     }
+  }
+
+  get distanceToHorizontalEdge() {
+    const {distanceToEdge} = this.props;
+    return typeof distanceToEdge === 'number'
+        ? distanceToEdge
+        : distanceToEdge.horizontal;
+  }
+
+  get distanceToVerticalEdge() {
+    const {distanceToEdge} = this.props;
+    return typeof distanceToEdge === 'number'
+        ? distanceToEdge
+        : distanceToEdge.vertical;
   }
 
   onKeyboardShow = e => {
@@ -525,7 +525,7 @@ class FloatingAction extends Component {
     return (
       <TouchableOpacity
         activeOpacity={1}
-        style={[styles.overlay, {backgroundColor: overlayColor}]}
+        style={[styles.overlay, { backgroundColor: overlayColor }]}
         onPress={this.handlePressBackdrop}
       />
     );
