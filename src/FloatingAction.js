@@ -1,4 +1,4 @@
-import React, {Component} from "react"; // eslint-disable-line
+import React, { Component } from "react"; // eslint-disable-line
 import PropTypes from "prop-types";
 import {
   StyleSheet,
@@ -14,8 +14,8 @@ import {
 import FloatingActionItem from "./FloatingActionItem";
 import AddIcon from "./AddIcon";
 
-import {isIphoneX} from "./utils/platform";
-import {getTouchableComponent, getRippleProps} from "./utils/touchable";
+import { isIphoneX } from "./utils/platform";
+import { getTouchableComponent, getRippleProps } from "./utils/touchable";
 
 const DEVICE_WIDTH = Dimensions.get("window").width;
 const DEVICE_HEIGHT = Dimensions.get("window").height;
@@ -43,9 +43,9 @@ class FloatingAction extends Component {
     );
     this.actionsBottomAnimation = new Animated.Value(
       props.buttonSize +
-      this.distanceToVerticalEdge +
-      props.actionsPaddingTopBottom +
-      props.mainVerticalDistance
+        this.distanceToVerticalEdge +
+        props.actionsPaddingTopBottom +
+        props.mainVerticalDistance
     );
     this.animation = new Animated.Value(0);
     this.actionsAnimation = new Animated.Value(0);
@@ -55,20 +55,6 @@ class FloatingAction extends Component {
      * interpolations with 0 and 1 don't work as expected.
      */
     this.fadeAnimation = new Animated.Value(props.visible ? 1 : 0);
-  }
-
-  get distanceToHorizontalEdge() {
-    const {distanceToEdge} = this.props;
-    return typeof distanceToEdge === 'number'
-        ? distanceToEdge
-        : distanceToEdge.horizontal;
-  }
-
-  get distanceToVerticalEdge() {
-    const {distanceToEdge} = this.props;
-    return typeof distanceToEdge === 'number'
-        ? distanceToEdge
-        : distanceToEdge.vertical;
   }
 
   componentDidMount() {
@@ -92,6 +78,20 @@ class FloatingAction extends Component {
         this.onKeyboardHideHide
       );
     }
+  }
+
+  get distanceToHorizontalEdge() {
+    const {distanceToEdge} = this.props;
+    return typeof distanceToEdge === 'number'
+        ? distanceToEdge
+        : distanceToEdge.horizontal;
+  }
+
+  get distanceToVerticalEdge() {
+    const {distanceToEdge} = this.props;
+    return typeof distanceToEdge === 'number'
+        ? distanceToEdge
+        : distanceToEdge.vertical;
   }
 
   componentDidUpdate(prevProps) {
@@ -188,7 +188,7 @@ class FloatingAction extends Component {
         return icon;
       }
       return (
-        <Image style={{width: iconWidth, height: iconHeight}} source={icon}/>
+        <Image style={{ width: iconWidth, height: iconHeight }} source={icon} />
       );
     }
 
@@ -199,13 +199,13 @@ class FloatingAction extends Component {
 
       return (
         <Image
-          style={{width: iconWidth, height: iconHeight}}
+          style={{ width: iconWidth, height: iconHeight }}
           source={floatingIcon}
         />
       );
     }
 
-    return <AddIcon width={iconWidth} height={iconHeight} backgroundColor={iconColor} />;
+    return <AddIcon width={iconWidth} height={iconHeight} backgroundColor={iconColor}  />;
   };
 
   reset = () => {
@@ -496,7 +496,7 @@ class FloatingAction extends Component {
         {sortedActions.map(action => {
           const textColor = action.textColor || action.actionsTextColor;
           const textBackground =
-              action.textBackground || action.actionsTextBackground;
+            action.textBackground || action.actionsTextBackground;
 
           return (
             <FloatingActionItem
