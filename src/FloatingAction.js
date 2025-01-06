@@ -35,7 +35,8 @@ class FloatingAction extends Component {
     super(props);
 
     this.state = {
-      active: false
+      active: false,
+      shouldRender: props.visible ? true : false
     };
 
     this.mainBottomAnimation = new Animated.Value(
@@ -43,9 +44,9 @@ class FloatingAction extends Component {
     );
     this.actionsBottomAnimation = new Animated.Value(
       props.buttonSize +
-        this.distanceToVerticalEdge +
-        props.actionsPaddingTopBottom +
-        props.mainVerticalDistance
+      this.distanceToVerticalEdge +
+      props.actionsPaddingTopBottom +
+      props.mainVerticalDistance
     );
     this.animation = new Animated.Value(0);
     this.actionsAnimation = new Animated.Value(0);
@@ -85,16 +86,17 @@ class FloatingAction extends Component {
 
     if (prevProps.visible !== visible) {
       if (visible) {
+        this.setState({shouldRender: true});
         Animated.parallel([
-          Animated.spring(this.visibleAnimation, { toValue: 0 }),
-          Animated.spring(this.fadeAnimation, { toValue: 1 })
+          Animated.spring(this.visibleAnimation, { toValue: 0, useNativeDriver: false }),
+          Animated.spring(this.fadeAnimation, { toValue: 1, useNativeDriver: false })
         ]).start();
       }
       if (!visible) {
         Animated.parallel([
-          Animated.spring(this.visibleAnimation, { toValue: 1 }),
-          Animated.spring(this.fadeAnimation, { toValue: 0 })
-        ]).start();
+          Animated.spring(this.visibleAnimation, { toValue: 1, useNativeDriver: false }),
+          Animated.spring(this.fadeAnimation, { toValue: 0, useNativeDriver: false })
+        ]).start(() => this.setState({shouldRender: false}));
       }
     }
   }
@@ -135,12 +137,14 @@ class FloatingAction extends Component {
           actionsPaddingTopBottom +
           height -
           (isIphoneX() ? 40 : 0),
-        duration: 250
+        duration: 250,
+        useNativeDriver: false
       }),
       Animated.spring(this.mainBottomAnimation, {
         bounciness: 0,
         toValue: this.distanceToVerticalEdge + height - (isIphoneX() ? 40 : 0),
-        duration: 250
+        duration: 250,
+        useNativeDriver: false
       })
     ]).start();
   };
@@ -152,12 +156,14 @@ class FloatingAction extends Component {
       Animated.spring(this.actionsBottomAnimation, {
         bounciness: 0,
         toValue: buttonSize + this.distanceToVerticalEdge + actionsPaddingTopBottom,
-        duration: 250
+        duration: 250,
+        useNativeDriver: false
       }),
       Animated.spring(this.mainBottomAnimation, {
         bounciness: 0,
         toValue: this.distanceToVerticalEdge,
-        duration: 250
+        duration: 250,
+        useNativeDriver: false
       })
     ]).start();
   };
@@ -178,7 +184,7 @@ class FloatingAction extends Component {
       overrideWithAction,
       iconWidth,
       iconHeight,
-      iconColor
+      iconColor,
     } = this.props;
 
     if (overrideWithAction) {
@@ -205,15 +211,15 @@ class FloatingAction extends Component {
       );
     }
 
-    return <AddIcon width={iconWidth} height={iconHeight} backgroundColor={iconColor}  />;
+    return <AddIcon width={iconWidth} height={iconHeight} backgroundColor={iconColor} />;
   };
 
   reset = () => {
     const { animated, onClose } = this.props;
 
     if (animated) {
-      Animated.spring(this.animation, { toValue: 0 }).start();
-      Animated.spring(this.actionsAnimation, { toValue: 0 }).start();
+      Animated.spring(this.animation, { toValue: 0, useNativeDriver: false }).start();
+      Animated.spring(this.actionsAnimation, { toValue: 0, useNativeDriver: false }).start();
     }
     this.updateState(
       {
@@ -256,12 +262,12 @@ class FloatingAction extends Component {
     if (!active) {
       if (!floatingIcon) {
         if (animated) {
-          Animated.spring(this.animation, { toValue: 1 }).start();
+          Animated.spring(this.animation, { toValue: 1, useNativeDriver: false }).start();
         }
       }
 
       if (animated) {
-        Animated.spring(this.actionsAnimation, { toValue: 1 }).start();
+        Animated.spring(this.actionsAnimation, { toValue: 1, useNativeDriver: false }).start();
 
         // only execute it for the background to prevent extra calls
         LayoutAnimation.configureNext({
@@ -452,7 +458,8 @@ class FloatingAction extends Component {
       overrideWithAction,
       distanceToEdge,
       actionsPaddingTopBottom,
-      animated
+      animated,
+      tintColor,
     } = this.props;
     const { active } = this.state;
 
@@ -497,6 +504,8 @@ class FloatingAction extends Component {
           const textColor = action.textColor || action.actionsTextColor;
           const textBackground =
             action.textBackground || action.actionsTextBackground;
+          const tintColorIcon =
+            action.tintColor || tintColor || '#fff';
 
           return (
             <FloatingActionItem
@@ -504,6 +513,7 @@ class FloatingAction extends Component {
               distanceToEdge={distanceToEdge}
               key={action.name}
               textColor={textColor}
+              tintColor={tintColorIcon}
               textBackground={textBackground}
               shadow={this.getShadow()}
               {...action}
@@ -532,8 +542,12 @@ class FloatingAction extends Component {
   }
 
   render() {
-    const { active } = this.state;
-    const { showBackground } = this.props;
+    const { active, shouldRender } = this.state;
+    const { showBackground, visible } = this.props;
+
+    if (!shouldRender && !visible) {
+      return null;
+    }
 
     let bottom = 0;
     if (this.props.distanceToEdge && typeof this.props.distanceToEdge === "number") {
@@ -562,6 +576,7 @@ class FloatingAction extends Component {
 }
 
 FloatingAction.propTypes = {
+  tintColor: PropTypes.string,
   actions: PropTypes.arrayOf(
     PropTypes.shape({
       color: PropTypes.string,
@@ -572,7 +587,8 @@ FloatingAction.propTypes = {
       textBackground: PropTypes.string,
       textColor: PropTypes.string,
       component: PropTypes.func,
-      animated: PropTypes.bool
+      animated: PropTypes.bool,
+      tintColor: PropTypes.string
     })
   ),
   animated: PropTypes.bool,
